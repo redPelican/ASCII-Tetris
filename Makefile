@@ -1,8 +1,8 @@
 CC = clang
-CFLAGS = -std=c99 -Wall 
-LDFLAGS = -lncurses
+CFLAGS = -std=c99 -Wall -Isrc/other
+LDFLAGS = -lncurses 
 
-SRC = $(wildcard *.c)
+SRC = $(wildcard src/*.c) $(wildcard src/**/*.c)
 
 BIN = bin
 
