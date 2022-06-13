@@ -13,12 +13,22 @@
 
 char tetrimino[7][16];
 
+int nScreenWidth, nScreenHeight;
+
 int nFieldWidth = 10;
 int nFieldHeight = 40;
 unsigned char *pField = NULL;
 
 int main()
 {
+	// get the number of rows and columns and assigning them to nScreenHeight and nScreenWidth
+	getmaxyx(stdscr, nScreenHeight, nScreenWidth);
+
+	char *screen = malloc(sizeof(char)*nScreenWidth*nScreenHeight);
+	
+	for(int i = 0; i < nScreenWidth*nScreenHeight; i++)
+		screen[i] = ' ';
+
 	scr_Setup();
 
 	// I Piece
@@ -49,6 +59,12 @@ int main()
 			pField[y*nFieldWidth + x] = (x == 0 || x == nFieldWidth - 1 || y == nFieldHeight - 1) ? 9 : 0;
 
 	bool bGameOver = false;
+
+	int nCurrentPiece = 0;
+	int nCurrentRotation = 0;
+	int nCurrentX = nFieldWidth / 2;
+	int nCurrentY = 0;
+
 	while(!bGameOver) {
 		// GAME TIMING ======
 		
@@ -56,8 +72,16 @@ int main()
 		
 		// Draw Field
 
+		// Draw Tetrimino
 
-		// 
+		for(int px = 0; px < 4; px++)
+			for(int py = 0; py < 4; py++)
+				if(tetrimino[nCurrentPiece][rotate(px, py, nCurrentRotation)] == 'X')
+					pField[(nCurrentY + py + 2) * nScreenWidth + (nCurrentX + px + 2)] = nCurrentPiece + 65;
+
+
+		addnstr(screen, nScreenHeight*nScreenWidth);
+		/* 
 		scr_Output(0, 0, "Hello\n");
 
 		int ch;
@@ -65,9 +89,13 @@ int main()
 
 		if(ch == KEY_DOWN)
 			bGameOver = true;
+		*/
 	}
 
+	endwin();
+
 	free(pField);
+	free(screen);
 
 	return 0;
 }
