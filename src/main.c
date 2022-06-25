@@ -10,7 +10,6 @@
 #include "window.h"
 
 #define MAX_CHARS 16
-#define NKEYS 4
 
 char tetrimino[7][MAX_CHARS];
 
@@ -22,27 +21,8 @@ int nFieldHeight = 21;
 
 unsigned char *pField = NULL;
 
-// checks if a piece fits
-bool doesFit(int nTetrimino, int nRotation, int nPosX, int nPosY)
-{
-	for(int px = 0; px < 4; ++px)
-		for(int py = 0; py < 4; ++py) {
-			// get index into piece
-			int pi = rotate(px, py, nRotation);
 
-			// get index into field
-			int fi = (nPosY + py) * nFieldWidth + (nPosX + px);
-
-			if(nPosX + px >= 0 && nPosX + px < nFieldWidth)
-				if(nPosY + py >= 0 && nPosY + py < nFieldHeight)
-					if(tetrimino[nTetrimino][pi] == 'X' && pField[fi] != 0) {
-						return false;
-					}
-		}
-
-
-	return true;
-}
+bool doesFit(int nTetrimino, int nRotation, int nPosX, int nPosY);
 
 int main()
 {
@@ -121,7 +101,8 @@ int main()
 		// Down	
 		nCurrentY += (ch == KEY_DOWN && doesFit(nCurrentPiece, nCurrentRotation, nCurrentX, nCurrentY + 1)) ? 1 : 0;
 
-		// Z
+		// Rotate				 ENTER
+		nCurrentRotation += (ch == 10 && doesFit(nCurrentPiece, nCurrentRotation + 1, nCurrentX, nCurrentY)) ? 1 : 0;
 
 		if(ch == 32)
 			bGameOver = true; 
@@ -144,6 +125,7 @@ int main()
 				}
 
 		// Draw to Screen
+		clear();
 		addnstr(screen, nScreenHeight*nScreenWidth);
 
 		refresh();
@@ -152,6 +134,7 @@ int main()
 	endwin();
 
 	printf("x: %d, y: %d\n", nCurrentX, nCurrentY);
+	printf("%s\n", screen);
 
 	free(pField);
 	free(screen);
@@ -159,4 +142,24 @@ int main()
 	return 0;
 }
 
+// checks if a piece fits
+bool doesFit(int nTetrimino, int nRotation, int nPosX, int nPosY)
+{
+	for(int px = 0; px < 4; ++px)
+		for(int py = 0; py < 4; ++py) {
+			// get index into piece
+			int pi = rotate(px, py, nRotation);
 
+			// get index into field
+			int fi = (nPosY + py) * nFieldWidth + (nPosX + px);
+
+			if(nPosX + px >= 0 && nPosX + px < nFieldWidth)
+				if(nPosY + py >= 0 && nPosY + py < nFieldHeight)
+					if(tetrimino[nTetrimino][pi] == 'X' && pField[fi] != 0) {
+						return false;
+					}
+		}
+
+
+	return true;
+}
