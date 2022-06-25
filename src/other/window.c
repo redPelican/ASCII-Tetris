@@ -7,12 +7,5 @@ void scr_Setup()
 	cbreak();
 	keypad(stdscr, TRUE);
 	noecho();
+	nodelay(stdscr, TRUE);
 }
-
-void scr_Output(int pos_X, int pos_Y, const char* cont)
-{
-	mvprintw(pos_X, pos_Y, cont);
-
-	refresh();
-}
-

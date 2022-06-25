@@ -1,7 +1,9 @@
-#include <stdbool.h>
-
 #include "logic.h"
 
+#include <time.h>
+#include <errno.h>
+
+// Output the index of a piece in the tetrimino array
 int rotate(int px, int py, int r) 
 {
 	switch(r % 4) {
@@ -13,24 +15,26 @@ int rotate(int px, int py, int r)
 	return 0;
 }
 
-// checks if a piece fits
-bool doesFit(int nTetrimino, int nRotation, int nPosX, int nPosY, int nFieldWidth, int nFieldHeight, const char* tetrimino[], unsigned char* pField)
+// sleep function
+/*
+int msleep(long msec)
 {
-	for(int px = 0; px < 4; ++px)
-		for(int py = 0; py < 4; ++py) {
-			// get index into piece
-			int pi = rotate(px, py, nRotation);
+    struct timespec ts;
+    int res;
 
-			// get index into field
-			int fi = (nPosY + py) * nFieldWidth + (nPosX + px);
+    if (msec < 0)
+    {
+        errno = EINVAL;
+        return -1;
+    }
 
-			if(nPosX + px >= 0 && nPosX + px < nFieldWidth)
-				if(nPosY + py >= 0 && nPosY + py < nFieldHeight)
-					if(tetrimino[nTetrimino][pi] == 'X' && pField[fi] != 0) {
-						return false;
-					}
-		}
+    ts.tv_sec = msec / 1000;
+    ts.tv_nsec = (msec % 1000) * 1000000;
 
+    do {
+        res = nanosleep(&ts, &ts);
+    } while (res && errno == EINTR);
 
-	return true;
+    return res;
 }
+*/
